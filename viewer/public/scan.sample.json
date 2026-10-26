@@ -1,0 +1,267 @@
+{
+  "root": "/home/sample",
+  "platform": "linux",
+  "scannedAt": "2026-10-25T20:00:00.000Z",
+  "totalBytes": 276157169664,
+  "files": 1863325,
+  "skipped": 37,
+  "nodes": [
+    {
+      "name": "Library",
+      "bytes": 128526896333,
+      "files": 1094900,
+      "children": [
+        {
+          "name": "Caches",
+          "bytes": 34896609280,
+          "files": 282000,
+          "children": [
+            {
+              "name": "com.apple.Safari",
+              "bytes": 3221225472,
+              "files": 20000,
+              "children": []
+            },
+            {
+              "name": "Homebrew",
+              "bytes": 4294967296,
+              "files": 9000,
+              "children": []
+            },
+            {
+              "name": "pip",
+              "bytes": 2147483648,
+              "files": 31000,
+              "children": []
+            },
+            {
+              "name": "(other)",
+              "bytes": 1610612736,
+              "files": 42000,
+              "children": []
+            }
+          ]
+        },
+        {
+          "name": "Application Support",
+          "bytes": 46170898432,
+          "files": 134900,
+          "children": [
+            {
+              "name": "Code",
+              "bytes": 5368709120,
+              "files": 70000,
+              "children": []
+            },
+            {
+              "name": "Slack",
+              "bytes": 2147483648,
+              "files": 4000,
+              "children": []
+            },
+            {
+              "name": "Docker",
+              "bytes": 32212254720,
+              "files": 900,
+              "children": []
+            }
+          ]
+        },
+        {
+          "name": "Developer",
+          "bytes": 35433480192,
+          "files": 639000,
+          "children": [
+            {
+              "name": "Xcode",
+              "bytes": 19327352832,
+              "files": 420000,
+              "children": []
+            },
+            {
+              "name": "CoreSimulator",
+              "bytes": 11811160064,
+              "files": 210000,
+              "children": []
+            }
+          ]
+        },
+        {
+          "name": "Containers",
+          "bytes": 2147483648,
+          "files": 11000,
+          "children": []
+        },
+        {
+          "name": "(other)",
+          "bytes": 1288490189,
+          "files": 25000,
+          "children": []
+        }
+      ]
+    },
+    {
+      "name": "Movies",
+      "bytes": 53739520000,
+      "files": 125,
+      "children": [
+        {
+          "name": "Raw footage",
+          "bytes": 44023414784,
+          "files": 90,
+          "children": []
+        },
+        {
+          "name": "Exports",
+          "bytes": 9663676416,
+          "files": 25,
+          "children": []
+        }
+      ]
+    },
+    {
+      "name": "projects",
+      "bytes": 31004714598,
+      "files": 406560,
+      "children": [
+        {
+          "name": "disk-city",
+          "bytes": 450887680,
+          "files": 11060,
+          "children": [
+            {
+              "name": "node_modules",
+              "bytes": 125829120,
+              "files": 9000,
+              "children": []
+            },
+            {
+              "name": "viewer",
+              "bytes": 10485760,
+              "files": 60,
+              "children": []
+            }
+          ]
+        },
+        {
+          "name": "big-monorepo",
+          "bytes": 10372513792,
+          "files": 300000,
+          "children": [
+            {
+              "name": "node_modules",
+              "bytes": 6442450944,
+              "files": 240000,
+              "children": []
+            },
+            {
+              "name": ".git",
+              "bytes": 2147483648,
+              "files": 8000,
+              "children": []
+            },
+            {
+              "name": "packages",
+              "bytes": 943718400,
+              "files": 40000,
+              "children": []
+            }
+          ]
+        },
+        {
+          "name": "data-pipeline",
+          "bytes": 16423216742,
+          "files": 31500,
+          "children": [
+            {
+              "name": "datasets",
+              "bytes": 15032385536,
+              "files": 1200,
+              "children": []
+            },
+            {
+              "name": ".venv",
+              "bytes": 1181116006,
+              "files": 30000,
+              "children": []
+            }
+          ]
+        },
+        {
+          "name": "(other)",
+          "bytes": 2684354560,
+          "files": 60000,
+          "children": []
+        }
+      ]
+    },
+    {
+      "name": "Pictures",
+      "bytes": 26508840141,
+      "files": 66400,
+      "children": [
+        {
+          "name": "Photos Library.photoslibrary",
+          "bytes": 24696061952,
+          "files": 61000,
+          "children": []
+        },
+        {
+          "name": "Screenshots",
+          "bytes": 1288490189,
+          "files": 3400,
+          "children": []
+        }
+      ]
+    },
+    {
+      "name": "Downloads",
+      "bytes": 15032385536,
+      "files": 2340,
+      "children": [
+        {
+          "name": "installers",
+          "bytes": 6442450944,
+          "files": 40,
+          "children": []
+        },
+        {
+          "name": "(other)",
+          "bytes": 1073741824,
+          "files": 800,
+          "children": []
+        }
+      ]
+    },
+    {
+      "name": "Music",
+      "bytes": 12884901888,
+      "files": 9000,
+      "children": []
+    },
+    {
+      "name": "Documents",
+      "bytes": 3221225472,
+      "files": 14000,
+      "children": []
+    },
+    {
+      "name": ".npm",
+      "bytes": 2362232013,
+      "files": 150000,
+      "children": []
+    },
+    {
+      "name": ".cache",
+      "bytes": 1932735283,
+      "files": 90000,
+      "children": []
+    },
+    {
+      "name": "(other)",
+      "bytes": 943718400,
+      "files": 30000,
+      "children": []
+    }
+  ]
+}

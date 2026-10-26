@@ -8,8 +8,13 @@
     "node": ">=20"
   },
   "scripts": {
-    "test": "node --test scan.test.js",
-    "scan": "node scan.js"
+    "test": "node --test scan.test.js viewer/src/format.test.js viewer/src/layout.test.js",
+    "scan": "node scan.js",
+    "dev": "npm run dev --workspace viewer",
+    "build": "npm run build --workspace viewer"
   },
-  "license": "MIT"
+  "license": "MIT",
+  "workspaces": [
+    "viewer"
+  ]
 }
