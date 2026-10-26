@@ -145,7 +145,7 @@ Disk City is a small CLI + web viewer: `node scan.js` walks a folder and writes 
 | Assumption | Basis | If wrong |
 |---|---|---|
 | Viewer is vanilla Three.js, not React Three Fiber | User in conversation: "quanto mais JavaScript puro tiver, melhor"; overrides `scope.md` stack line | Rewrite viewer in R3F (~30 min) |
-| GitHub repo is named `disk-city`, public, owner `Marujinho` | `scope.md` layout uses `disk-city/`; `gh` is logged in as Marujinho | Rename repo |
+| GitHub repo is named `disk-city`, public, owner `Marujinho` | `scope.md` layout uses `disk-city/`; `gh` is logged in as Marujinho | Rename repo — **was wrong**: `origin` already pointed at the public, empty `Marujinho/disk-space-3d`; README links fixed in review |
 | `main` is the base branch; feature work on `feat/disk-city` and merged via PR | CLAUDE.md `base_branch` detection → repo default | Change PR target |
 | Root `package.json` uses npm workspaces so one `npm ci` installs the viewer | Scope's CI uses `--workspace viewer` | Add a second `npm ci` step in `viewer/` |
 | No ESLint in the time box | Scope doesn't list one; 3 source files | Add `eslint` flat config later (10 min) |

@@ -5,7 +5,7 @@ every directory is a building, its footprint is its share of bytes, its height
 is `log(bytes)`. Hover for the path and size, click a block to dive in, use the
 breadcrumb to come back.
 
-Live demo (sample data, published from `main`): **https://marujinho.github.io/disk-city/**
+Live demo (sample data, published from `main`): **https://marujinho.github.io/disk-space-3d/**
 
 ![Disk City viewer showing a treemap city](docs/screenshot.jpg)
 
