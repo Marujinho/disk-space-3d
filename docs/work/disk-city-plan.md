@@ -199,3 +199,42 @@ npm audit --omit=dev        → found 0 vulnerabilities
 
 ### Inherited failures
 none (greenfield)
+
+## Review
+
+**Date**: 2026-10-25 · **PR**: https://github.com/Marujinho/disk-space-3d/pull/1 · **CI**: run 40251314251, 4/4 jobs green (test × ubuntu/macos/windows, build)
+
+| Check | Result | Details |
+|---|---|---|
+| Lint | – | not configured (PRD §9) |
+| Types | – | not configured (plain JS) |
+| Tests | ✅ | 37 passed, 0 failed locally; CI: ubuntu 37/37, macos 37/37, windows 35 + 2 skipped (chmod tests; the symlink test ran and passed on the Windows runner) |
+| Performance | ✅ | 0 issues — sequential walk with batched `stat`, O(1) lookups in layout, ≤ 1k meshes, disposed on re-render |
+| OWASP Top 10:2025 | ⚠️ | 0 critical · 0 high · 3 medium · 4 low (below) |
+| PRD DoD | ✅ | 8 of 8 met — CI green on the three OSes, PR open |
+
+### Fixed
+- `viewer/src/style.css:90` — `#tip` had no `top/left`; its static position was below the canvas, so the tooltip never appeared on screen. Found by the independent reviewer; my JS probe had only checked `hidden`/text.
+- `viewer/src/city.js:99` — `pointerleave` left `pointerDirty` set, so the next frame re-hovered with stale coords.
+- `scan.js:main` — unreadable root passed `stat` and wrote `{totalBytes:0}` with exit 0; now `readdir(root)` is a precheck → exit 1. Test added (POSIX).
+- `scan.js:scanDir` — files whose `stat` failed were counted in `files`; now only successful stats count. Test extended.
+- `scan.js:collapseSmall` — a lone small sibling was renamed `(other)`; now kept. Test added.
+- `scan.js:main` — an fs error outside the skip set aborted with a stack trace; now a one-line `Scan aborted: CODE at PATH`, exit 1.
+- `viewer/src/layout.js` — `value = max(bytes, Σchildren)` so hand-edited JSON can't overflow a block.
+- `.gitignore` / `viewer/.claude/audit/` — audit log written by the hook (it resolves the project dir from the tool's cwd) had been committed; removed, ignored at any depth.
+- `README.md`, PRD §15 — repo is `Marujinho/disk-space-3d` (pre-existing `origin`), not `disk-city`.
+
+### Findings (open)
+**[MEDIUM] Unexpected fs errors abort the scan** · `scan.js:76` · OWASP A10 — EIO, ENAMETOOLONG, ENOTDIR races end an hour-long scan with exit 1. PRD A10 chose this; widening the skip set to any `err.code` from fs is a one-line change if it bites.
+**[MEDIUM] `(other)` name collision** · `scan.js:18` · correctness — a real dir named `(other)` yields two siblings with that name. Sums stay correct. Fix: a `synthetic: true` marker in the contract.
+**[MEDIUM] Pages enablement may need a manual step** · `.github/workflows/pages.yml:36` · OWASP A02 — `enablement: true` can fail where Pages was never enabled; README documents Settings → Pages → GitHub Actions.
+**[LOW] Actions pinned to major tags, not SHAs** · `.github/workflows/*.yml` · OWASP A03.
+**[LOW] Audit hook follows the tool cwd** · `.claude/hooks/_common.py:28` · A09 — pre-existing scaffold behaviour; now gitignored at any depth. Pinning to `CLAUDE_PROJECT_DIR` first would remove the cause.
+**[LOW] Windows reparse-point skipping unverified** · `scan.js:88` · README claim relies on libuv reporting reparse points as symlinks; CI on a plain Windows runner can't exercise OneDrive placeholders.
+**[LOW] Canvas not keyboard-navigable** · `viewer/src/city.js` · a11y — breadcrumb and top-10 list are.
+
+### Verdict
+PASS WITH NOTES
+
+### PR
+https://github.com/Marujinho/disk-space-3d/pull/1 — base `main`, CI green. **Merge is a hard gate** (CLAUDE.md § Execution boundaries): not merged. Pages deploy (`/deploy-work`) fires on merge to `main`.
