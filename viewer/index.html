@@ -4,8 +4,36 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Disk City</title>
+    <link rel="stylesheet" href="./src/style.css" />
   </head>
   <body>
+    <header>
+      <h1>Disk City</h1>
+      <dl id="meta">
+        <div><dt>Root</dt><dd id="meta-root">–</dd></div>
+        <div><dt>Total</dt><dd id="meta-total">–</dd></div>
+        <div><dt>Scanned</dt><dd id="meta-scanned">–</dd></div>
+        <div><dt>Skipped</dt><dd id="meta-skipped">–</dd></div>
+      </dl>
+      <button id="mode" type="button" title="Toggle building height scale">height: log</button>
+    </header>
+    <div id="banner" hidden></div>
+    <nav id="crumbs" aria-label="Breadcrumb"></nav>
+    <main>
+      <canvas id="c"></canvas>
+      <div id="tip" hidden>
+        <span id="tip-path"></span>
+        <span id="tip-size"></span>
+        <span id="tip-pct"></span>
+        <span id="tip-files"></span>
+      </div>
+      <p id="hint">drag to orbit · scroll to zoom · hover for details · click a block to dive in</p>
+    </main>
+    <aside id="top">
+      <h2>Top 10</h2>
+      <ol></ol>
+    </aside>
     <noscript>Disk City needs JavaScript and WebGL.</noscript>
+    <script type="module" src="./src/main.js"></script>
   </body>
 </html>
