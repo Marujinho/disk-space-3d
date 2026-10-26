@@ -16,10 +16,14 @@ that last part on all three.
 ## Quick start
 
 ```sh
-npm install
 node scan.js              # scans your home dir -> viewer/public/scan.json
-npm run dev               # opens the viewer on http://localhost:5173
+npm run dev               # serves the viewer on http://127.0.0.1:5173
 ```
+
+Nothing to install. The scanner and the dev server use only Node built-ins,
+and the viewer's two libraries are vendored in `viewer/vendor/`. Any static
+file server pointed at `viewer/` works too; opening `index.html` straight from
+disk doesn't, because browsers block `fetch` from `file://`.
 
 Scan something smaller first if you want a quick look:
 
@@ -80,8 +84,7 @@ the tree, which sidesteps separator differences between platforms.
 ## Tests and CI
 
 ```sh
-npm test          # node:test — scanner + layout math, no browser needed
-npm run build     # vite build of the viewer
+npm test          # node:test — scanner, dev server, layout math; no install, no browser
 ```
 
 `.github/workflows/ci.yml` runs on every push and pull request:
@@ -90,9 +93,7 @@ npm run build     # vite build of the viewer
   then a real `node scan.js .` on the runner. The matrix is the point — it
   exercises `path.join`, symlink skipping and the permission-error handling on
   each OS, not just that the code parses.
-- **build**: the viewer bundles.
-
-`.github/workflows/pages.yml` deploys `viewer/dist` with the sample data to
+`.github/workflows/pages.yml` deploys `viewer/` as-is, with the sample data, to
 GitHub Pages on every push to `main`. One-time setup if the first run says
 "Resource not accessible by integration": Settings → Pages → Source → *GitHub
 Actions*, then re-run the workflow.
@@ -122,7 +123,7 @@ test skips on Windows (no `chmod 000`) and when running as root.
 | On-disk / allocated size | Needs platform syscalls; out of a one-hour JS toy |
 | Delete / reveal in Finder | A read-only tool stays read-only |
 | ESLint / Prettier | Three source files and a test runner. The cross-OS test matrix is the quality gate; a linter is a ten-minute add when there's a second contributor |
-| TypeScript, React | The brief allowed either; I wanted as much plain JavaScript as possible. The viewer is vanilla `three` + `d3-hierarchy`, Vite only bundles |
+| TypeScript, React | The brief allowed either; I wanted as much plain JavaScript as possible. The viewer is vanilla `three` + `d3-hierarchy`, vendored and loaded through an import map. No bundler, no `node_modules` |
 | Keyboard navigation of the canvas | The breadcrumb and top-10 list are plain DOM and keyboard-reachable; the 3D canvas isn't |
 | Comparing two scans | Nice, not small |
 
@@ -138,12 +139,12 @@ overridden, and why:
   picture.
 - **`node scan.js … || node scan.js …` → `${{ runner.temp }}`.** The scope's
   own second thought; one line that works on all three runners.
-- **Node 20 everywhere → 20 for the scanner matrix, 22 for the Vite build.**
-  Vite 8 needs a newer Node than the scanner does; the matrix stays on 20 to
-  prove the `>= 20` claim.
-- **Dev-server fallback.** Vite answers unknown paths with `index.html` and a
-  200, so "no `scan.json`" has to mean "non-OK *or* non-JSON". Found by probing
-  the server, not by reading docs.
+- **Vite → no build step.** The first version bundled with Vite. It was
+  dropped for vendored libraries, an import map and a 100-line dev server, so
+  the repo has no dependencies at all.
+- **Dev-server fallback.** Some static servers answer unknown paths with
+  `index.html` and a 200, so "no `scan.json`" has to mean "non-OK *or*
+  non-JSON". Found by probing Vite's server, not by reading docs.
 - **Layout is a pure module.** Treemap maths, path rebuilding and validation
   live in `viewer/src/layout.js` so they run under `node:test`; only the
   three.js and DOM code is verified by hand.

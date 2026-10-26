@@ -35,15 +35,15 @@ function showBanner(text, { error = false, code } = {}) {
 
 /**
  * Try the real scan first; fall back to the sample when it's missing.
- * The Vite dev server answers unknown paths with index.html (200, text/html),
+ * Some static servers answer unknown paths with index.html (200, text/html),
  * so "missing" means non-OK *or* non-JSON.
  */
 async function loadScan() {
-  const real = await fetch('./scan.json').catch(() => null);
+  const real = await fetch('./public/scan.json').catch(() => null);
   if (real && real.ok && (real.headers.get('content-type') ?? '').includes('json')) {
     return { scan: validateScan(await real.json()), sample: false };
   }
-  const sample = await fetch('./scan.sample.json');
+  const sample = await fetch('./public/scan.sample.json');
   if (!sample.ok) throw new TypeError(`scan.sample.json: HTTP ${sample.status}`);
   return { scan: validateScan(await sample.json()), sample: true };
 }

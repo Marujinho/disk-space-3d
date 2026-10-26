@@ -143,7 +143,6 @@ export function createCity(canvas) {
     }
     scene.add(group);
     setHover(null);
-    if (import.meta.env.DEV) console.log(`[disk-city] ${group.children.length} meshes`);
   }
 
   /** Fly the camera to frame a rect in ground coordinates (or the whole level when omitted). */

@@ -22,18 +22,13 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 22
-          cache: npm
-      - run: npm ci
-      # No scan.json in the build: the viewer falls back to scan.sample.json and says so.
-      - run: npm run build --workspace viewer
+      # No build step: viewer/ is served as-is. There is no scan.json in a clean
+      # checkout, so the viewer falls back to scan.sample.json and says so.
       - uses: actions/configure-pages@v5
         with:
           enablement: true
       - uses: actions/upload-pages-artifact@v3
         with:
-          path: viewer/dist
+          path: viewer
       - id: deployment
         uses: actions/deploy-pages@v4

@@ -1,7 +1,7 @@
 // Pure layout: scan JSON -> treemap rectangles with heights and rebuilt paths.
 // No DOM, no three.js, so it runs under node:test.
 
-import { hierarchy, treemap, treemapSquarify } from 'd3-hierarchy';
+import { hierarchy, treemap, treemapSquarify } from '../vendor/d3-hierarchy/index.js';
 
 const MIN_HEIGHT = 0.1;
 
