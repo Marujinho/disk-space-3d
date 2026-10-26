@@ -1,0 +1,15 @@
+{
+  "name": "disk-city",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Scan a folder and open a 3D city where every directory is a building sized by bytes",
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "test": "node --test scan.test.js",
+    "scan": "node scan.js"
+  },
+  "license": "MIT"
+}
