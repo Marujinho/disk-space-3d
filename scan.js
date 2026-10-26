@@ -110,13 +110,18 @@ export async function scanDir(dir, options = {}) {
       } catch (err) {
         if (SKIP_CODES.has(err?.code)) {
           state.skipped++;
-          return 0;
+          return null;
         }
         throw err;
       }
     }));
-    for (const size of sizes) node.bytes += size;
-    node.files += batch.length;
+    let counted = 0;
+    for (const size of sizes) {
+      if (size === null) continue;
+      node.bytes += size;
+      counted++;
+    }
+    node.files += counted;
     state.files += batch.length;
     if (onProgress && state.files >= state.nextTick) {
       state.nextTick = state.files + progressEvery;
@@ -146,7 +151,12 @@ export function collapseSmall(nodes, threshold) {
       kept.push(node);
     }
   }
-  if (collapsed > 0) kept.push(other);
+  if (collapsed === 1) {
+    // A lone small sibling keeps its own name; "(other)" only earns its place by merging.
+    return nodes.map((n) => ({ ...n, children: collapseSmall(n.children ?? [], threshold) }))
+      .sort((a, b) => b.bytes - a.bytes);
+  }
+  if (collapsed > 1) kept.push(other);
   return kept.sort((a, b) => b.bytes - a.bytes);
 }
 
@@ -191,6 +201,7 @@ export async function main(argv, { stderr = process.stderr } = {}) {
       stderr.write(`Not a directory: ${root}\n`);
       return 1;
     }
+    await fsp.readdir(root); // an unreadable root is fatal; unreadable subtrees are not
   } catch (err) {
     stderr.write(`Cannot read ${root}: ${err.code ?? err.message}\n`);
     return 1;
@@ -198,10 +209,17 @@ export async function main(argv, { stderr = process.stderr } = {}) {
 
   stderr.write(`Scanning ${root} (depth ${opts.depth}, min ${opts.min})...\n`);
   const started = Date.now();
-  const result = await scanDir(root, {
-    depth: opts.depth,
-    onProgress: ({ files, skipped }) => stderr.write(`  ${files} files (${skipped} skipped)\n`),
-  });
+  let result;
+  try {
+    result = await scanDir(root, {
+      depth: opts.depth,
+      onProgress: ({ files, skipped }) => stderr.write(`  ${files} files (${skipped} skipped)\n`),
+    });
+  } catch (err) {
+    if (!err?.code) throw err;
+    stderr.write(`Scan aborted: ${err.code} at ${err.path ?? '?'} (only ${[...SKIP_CODES].join(', ')} are skipped)\n`);
+    return 1;
+  }
   const output = toOutput({ root, result, min: opts.min });
 
   await fsp.mkdir(path.dirname(path.resolve(opts.out)), { recursive: true });

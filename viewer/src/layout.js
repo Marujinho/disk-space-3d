@@ -83,7 +83,8 @@ export function layoutLevel(level, { ground = 100, mode = 'log', maxHeight = 25,
     if (byData.get(d)?.parent === level) return d.children;
     return null;
   });
-  local.each((n) => { n.value = n.data.bytes; });
+  // Clamp so hand-edited JSON with bytes < sum(children) can't overflow its block.
+  local.each((n) => { n.value = Math.max(n.data.bytes, sumChildren(n.data)); });
   local.sort((a, b) => b.value - a.value);
 
   treemap()

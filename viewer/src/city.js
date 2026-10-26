@@ -102,7 +102,7 @@ export function createCity(canvas) {
     lastClient = { x: e.clientX - r.left, y: e.clientY - r.top };
     pointerDirty = true;
   });
-  canvas.addEventListener('pointerleave', () => setHover(null));
+  canvas.addEventListener('pointerleave', () => { pointerDirty = false; setHover(null); });
   canvas.addEventListener('pointerdown', (e) => { downAt = { x: e.clientX, y: e.clientY }; });
   canvas.addEventListener('pointerup', (e) => {
     if (!downAt) return;

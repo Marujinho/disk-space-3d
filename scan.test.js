@@ -145,6 +145,7 @@ describe('scanDir', () => {
     const r = await scanDir(root, { fs });
     assert.equal(r.bytes, 100);
     assert.equal(r.skipped, 1);
+    assert.equal(r.files, 4, 'a file whose stat failed is not counted');
   });
 
   it('reports progress at the configured interval', async () => {
@@ -174,6 +175,11 @@ describe('collapseSmall', () => {
     assert.notEqual(out, input);
   });
 
+  it('leaves a lone small sibling alone instead of renaming it (other)', () => {
+    const out = collapseSmall([n('big', 100), n('tiny', 1)], 5);
+    assert.deepEqual(out.map((x) => x.name), ['big', 'tiny']);
+  });
+
   it('collapses recursively inside children', () => {
     const out = collapseSmall([n('p', 50, 3, [n('c1', 45), n('c2', 3), n('c3', 2)])], 5);
     assert.deepEqual(out[0].children.map((x) => x.name), ['c1', '(other)']);
@@ -183,7 +189,7 @@ describe('collapseSmall', () => {
 
 describe('toOutput', () => {
   it('produces the viewer contract', () => {
-    const result = { bytes: 1000, files: 3, skipped: 2, children: [{ name: 'x', bytes: 999, files: 2, children: [] }, { name: 'y', bytes: 1, files: 1, children: [] }] };
+    const result = { bytes: 1000, files: 4, skipped: 2, children: [{ name: 'x', bytes: 998, files: 2, children: [] }, { name: 'y', bytes: 1, files: 1, children: [] }, { name: 'z', bytes: 1, files: 1, children: [] }] };
     const out = toOutput({ root: '/r', result, min: 0.01, platform: 'linux', now: new Date('2026-10-25T00:00:00Z') });
     assert.equal(out.root, '/r');
     assert.equal(out.platform, 'linux');
@@ -225,6 +231,23 @@ describe('main (CLI)', () => {
       execFileP(process.execPath, [SCAN_JS, path.join(root, 'missing')]),
       (err) => err.code === 1 && /Cannot read/.test(err.stderr),
     );
+  });
+
+  it('exits 1 on an unreadable root instead of writing an empty scan', async (t) => {
+    if (IS_WIN) { t.skip('chmod 000 has no effect on Windows'); return; }
+    if (IS_ROOT) { t.skip('root can read anything'); return; }
+    const locked = path.join(root, 'locked-root');
+    await fsp.mkdir(locked);
+    await fsp.chmod(locked, 0o000);
+    try {
+      await assert.rejects(
+        execFileP(process.execPath, [SCAN_JS, locked, '--out', path.join(root, 'never.json')]),
+        (err) => err.code === 1 && /Cannot read/.test(err.stderr),
+      );
+      await assert.rejects(fsp.access(path.join(root, 'never.json')));
+    } finally {
+      await fsp.chmod(locked, 0o755);
+    }
   });
 
   it('exits 1 with usage on a bad flag', async () => {

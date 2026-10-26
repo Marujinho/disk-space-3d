@@ -93,7 +93,9 @@ npm run build     # vite build of the viewer
 - **build**: the viewer bundles.
 
 `.github/workflows/pages.yml` deploys `viewer/dist` with the sample data to
-GitHub Pages on every push to `main`.
+GitHub Pages on every push to `main`. One-time setup if the first run says
+"Resource not accessible by integration": Settings → Pages → Source → *GitHub
+Actions*, then re-run the workflow.
 
 Tests build their fixture trees in `os.tmpdir()`. The symlink test skips itself
 on Windows when symlink creation needs Developer Mode, and the unreadable-dir
