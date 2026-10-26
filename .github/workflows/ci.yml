@@ -1,0 +1,37 @@
+name: CI
+
+on: [push, pull_request]
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    name: test (${{ matrix.os }})
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - run: npm test
+      # The matrix is the point: a real scan on each OS proves path and permission handling.
+      - run: node scan.js . --depth 2 --out ${{ runner.temp }}/scan.json
+      - run: node -e "const s=JSON.parse(require('fs').readFileSync(process.argv[1],'utf8')); if(!(s.totalBytes>0&&Array.isArray(s.nodes))) process.exit(1); console.log(s.totalBytes,'bytes,',s.nodes.length,'nodes')" ${{ runner.temp }}/scan.json
+
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run build --workspace viewer
