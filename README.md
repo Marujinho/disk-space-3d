@@ -8,15 +8,20 @@ breadcrumb to come back.
 ![Disk City viewer showing a treemap city](docs/screenshot.jpg)
 
 Built in about an hour for a "build any small app with AI" brief. Plain
-JavaScript (ESM), Node ≥ 20, runs on Linux, macOS and Windows — and CI proves
+JavaScript (ESM), Node 20.19+ or 22.12+, runs on Linux, macOS and Windows — and CI proves
 that last part on all three.
 
 ## Quick start
 
+Needs Node 20.19+ or 22.12+ (check with `node -v`). The viewer's bundler, Vite 8,
+refuses older versions.
+
 ```sh
+git clone https://github.com/Marujinho/disk-space-3d.git
+cd disk-space-3d
 npm install
 node scan.js              # scans your home dir -> viewer/public/scan.json
-npm run dev               # opens the viewer on http://localhost:5173
+npm run dev               # prints http://localhost:5173 — open it in your browser
 ```
 
 Scan something smaller first if you want a quick look:
@@ -24,6 +29,9 @@ Scan something smaller first if you want a quick look:
 ```sh
 node scan.js ~/projects --depth 3
 ```
+
+On Windows `cmd`, `~` isn't expanded; give the full path, e.g.
+`node scan.js C:\Users\you\projects`.
 
 Without a `scan.json` the viewer shows the committed sample and says so in a banner.
 
@@ -136,8 +144,8 @@ overridden, and why:
   own second thought; one line that works on all three runners.
 - **No GitHub Pages deploy.** The scope suggested publishing the viewer with
   the sample data. It was dropped: the point is scanning your own disk, which a
-  hosted page can't do, so CI only runs the tests on Node 20 to prove the
-  `>= 20` claim. Vite 8 itself wants Node 20.19+ or 22.12+ locally.
+  hosted page can't do, so CI only runs the tests, on the latest Node 20.
+  The supported range, 20.19+ or 22.12+, comes from Vite 8.
 - **Dev-server fallback.** Vite answers unknown paths with `index.html` and a
   200, so "no `scan.json`" has to mean "non-OK *or* non-JSON". Found by probing
   the server, not by reading docs.
