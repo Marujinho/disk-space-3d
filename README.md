@@ -5,8 +5,6 @@ every directory is a building, its footprint is its share of bytes, its height
 is `log(bytes)`. Hover for the path and size, click a block to dive in, use the
 breadcrumb to come back.
 
-Live demo (sample data, published from `main`): **https://marujinho.github.io/disk-space-3d/**
-
 ![Disk City viewer showing a treemap city](docs/screenshot.jpg)
 
 Built in about an hour for a "build any small app with AI" brief. Plain
@@ -90,12 +88,10 @@ npm run build     # vite build of the viewer
   then a real `node scan.js .` on the runner. The matrix is the point — it
   exercises `path.join`, symlink skipping and the permission-error handling on
   each OS, not just that the code parses.
-- **build**: the viewer bundles.
 
-`.github/workflows/pages.yml` deploys `viewer/dist` with the sample data to
-GitHub Pages on every push to `main`. One-time setup if the first run says
-"Resource not accessible by integration": Settings → Pages → Source → *GitHub
-Actions*, then re-run the workflow.
+CI only tests; nothing is deployed. The viewer needs a scan of your own disk,
+which only `node scan.js` on your machine can make, so a hosted copy could only
+ever show the sample.
 
 Tests build their fixture trees in `os.tmpdir()`. The symlink test skips itself
 on Windows when symlink creation needs Developer Mode, and the unreadable-dir
@@ -138,9 +134,10 @@ overridden, and why:
   picture.
 - **`node scan.js … || node scan.js …` → `${{ runner.temp }}`.** The scope's
   own second thought; one line that works on all three runners.
-- **Node 20 everywhere → 20 for the scanner matrix, 22 for the Vite build.**
-  Vite 8 needs a newer Node than the scanner does; the matrix stays on 20 to
-  prove the `>= 20` claim.
+- **No GitHub Pages deploy.** The scope suggested publishing the viewer with
+  the sample data. It was dropped: the point is scanning your own disk, which a
+  hosted page can't do, so CI only runs the tests on Node 20 to prove the
+  `>= 20` claim. Vite 8 itself wants Node 20.19+ or 22.12+ locally.
 - **Dev-server fallback.** Vite answers unknown paths with `index.html` and a
   200, so "no `scan.json`" has to mean "non-OK *or* non-JSON". Found by probing
   the server, not by reading docs.
